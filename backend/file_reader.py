@@ -11,7 +11,6 @@ def read_users():
     with open(file_path, 'r', encoding='utf8') as f:
         unique_user_ids = set()
         users = []
-        count = 0
         for line in f:
             line = line.rstrip("\n")
             user_ids = line.split(" ")

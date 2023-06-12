@@ -10,8 +10,11 @@ def setup_db(app: Flask):
     with app.app_context():
         client = ArangoClient(hosts="http://127.0.0.1:11001")
         sys_db = client.db('_system', username='root', password='passwd')
-        if not sys_db.has_database('twitter2'):
-            sys_db.create_database('twitter2')
+
+        if sys_db.has_database('twitter2'):
+            return
+
+        sys_db.create_database('twitter2')
         db = client.db(name='twitter2', username='root', password='passwd')
         print(db.collections())
         if not db.has_collection('users'):
@@ -24,5 +27,5 @@ def initial_data_load(db: StandardDatabase):
     users = file_reader.read_users()
     users_collection = db.collection('users')
     success = users_collection.insert_many(users, overwrite=True)
-    print(success)
+    print("Created users")
 
