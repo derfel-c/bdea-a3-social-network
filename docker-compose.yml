@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  agency:
+    container_name: agency
+    image: arangodb:latest
+    ports:
+      - "8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.endpoint tcp://0.0.0.0:8529 --agency.my-address=tcp://agency:8529 --server.authentication false --agency.activate true --agency.size 1 --agency.endpoint tcp://agency:8529 --agency.supervision true
+
+  database1:
+    restart: always
+    container_name: database1
+    image: arangodb:latest
+    depends_on:
+      - agency
+    ports:
+      - "8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://database1:8529 --cluster.my-role PRIMARY --cluster.agency-endpoint tcp://agency:8529
+
+  database2:
+    restart: always
+    container_name: database2
+    image: arangodb:latest
+    depends_on:
+      - agency
+    ports:
+      - "8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://database2:8529 --cluster.my-role PRIMARY --cluster.agency-endpoint tcp://agency:8529
+
+  coordinator1:
+    restart: always
+    container_name: coordinator1
+    image: arangodb:latest
+    depends_on:
+      - database1
+      - database2
+    ports:
+      - "11001:8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://coordinator1:8529 --cluster.my-role COORDINATOR --cluster.agency-endpoint tcp://agency:8529
