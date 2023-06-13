@@ -2,6 +2,7 @@ import os
 from mimesis import Person
 from arango.collection import StandardCollection
 import time
+import pandas as pd
 
 
 def read_users():
@@ -51,3 +52,14 @@ def read_relations(collection: StandardCollection):
         collection.insert_many(follower_relations, overwrite=True)
         end = time.time()
         print("Finished creating {} follower relations, took {} seconds".format(count, end - start))
+
+
+def read_tweets():
+    script_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(script_path, 'resources/tweets.csv')
+    content = pd.read_csv(file_path)
+    content["number_of_likes"] = pd.to_numeric(content["number_of_likes"])
+    content["number_of_shares"] = pd.to_numeric(content["number_of_shares"])
+    content["date_time"] = pd.to_datetime(content["date_time"], format="%d/%m/%Y %H:%M")
+    formatted = content.to_dict('records')
+    return formatted

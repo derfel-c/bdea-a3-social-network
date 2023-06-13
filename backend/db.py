@@ -21,11 +21,11 @@ def setup_db(app: Flask):
 
 
 def initial_data_load(db: StandardDatabase):
-    create_users(db)
+    users = create_users(db)
     create_relations(db)
 
 
-def create_users(db: StandardDatabase):
+def create_users(db: StandardDatabase) -> list[dict[str, str]]:
     if not db.has_collection('users'):
         users_collection = db.create_collection('users')
     else:
@@ -33,6 +33,7 @@ def create_users(db: StandardDatabase):
     users = file_reader.read_users()
     users_collection.insert_many(users, overwrite=True)
     print("Created users")
+    return users
 
 
 def create_relations(db: StandardDatabase):
@@ -41,3 +42,12 @@ def create_relations(db: StandardDatabase):
     else:
         follows_edge_collection = db.collection('follows')
     file_reader.read_relations(follows_edge_collection)
+
+def create_tweets(db: StandardDatabase):
+    if not db.has_collection('tweets'):
+        tweets_collection = db.create_collection('tweets')
+    else:
+        tweets_collection = db.collection('tweets')
+    tweets = file_reader.read_tweets()
+    result = tweets_collection.insert_many(tweets)
+
