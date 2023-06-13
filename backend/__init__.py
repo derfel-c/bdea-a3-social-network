@@ -9,7 +9,7 @@ def create_app():
     # init db
     from . import db
 
-    db.setup_db(app)
+    db.setup_db(app, 10000)
 
     # setup api endpoints
     from . import api

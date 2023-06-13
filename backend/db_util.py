@@ -3,8 +3,11 @@ from typing import List, Dict
 
 from mimesis import Person
 from arango.collection import StandardCollection
+from arango.database import StandardDatabase
+from . import queries
 import time
 import pandas as pd
+import math
 
 
 def read_users() -> List[Dict[str, str]]:
@@ -87,3 +90,36 @@ def map_tweets_to_users(tweets: List[Dict], tweet_ids: List[str], users: List[Di
         for tweet in tweet_user_mapping[author]:
             wrote_relations.append({"_from": "users/" + author, "_to": "tweets/" + tweet_ids[tweet]})
     return wrote_relations
+
+
+def create_likes(collection: StandardCollection, tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str, str]]):
+    max_like_count = max(tweets, key=lambda x: x["number_of_likes"])["number_of_likes"]
+    share = math.floor(max_like_count / len(users))
+    start = time.time()
+    previous_percentage = -1
+    tweets_len = len(tweets)
+    for idx, t in enumerate(tweets):
+        relations = []
+        completion_percentage = math.floor((idx / tweets_len) * 10)
+        for i in range(0, int(t["number_of_likes"] / share)):
+            if users[idx]:
+                relations.append({"_from": "users/" + users[idx]["_key"], "_to": "tweets/" + tweet_ids[idx]})
+        collection.insert_many(relations)
+        if previous_percentage != completion_percentage:
+            print("{}% completed".format(completion_percentage * 10))
+            previous_percentage = completion_percentage
+    end = time.time()
+    print("Finished creating like relations in {} seconds".format(end - start))
+
+
+def create_fanout(db: StandardDatabase, collection: StandardCollection, users: List[Dict[str, str]], limit: int):
+    count = 0
+    for u in users:
+        count += 1
+        if limit != -1 and count > limit:
+            break
+        tweets = queries.query_posts_of_followed_users(db, u["_key"], "newest", -1)
+        relations = []
+        for t in tweets:
+            relations.append({"_from": "users/" + u["_key"], "_to": "tweets/" + t["_key"]})
+        collection.insert_many(relations)
