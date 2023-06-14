@@ -10,7 +10,7 @@ from . import db_util
 def setup_db(app: Flask, tweet_limit: int):
     with app.app_context():
         db = get_db()
-        #initial_data_load(db, tweet_limit)
+        initial_data_load(db, tweet_limit)
 
 
 def get_db() -> StandardDatabase:
@@ -30,8 +30,8 @@ def initial_data_load(db: StandardDatabase, tweet_limit: int):
     create_follower_relations(db)
     tweet_ids, tweets = create_tweets(db, tweet_limit)
     create_author_relations(db, tweet_ids, tweets, users)
-    #create_user_likes_relations(db, tweets, tweet_ids, users)
-    #create_fanout(db, users)
+    create_user_likes_relations(db, tweets, tweet_ids, users)
+    create_fanout(db, users)
     end = time.time()
     print("Finished initial data load, took {}".format(end - start))
 
