@@ -1,0 +1,293 @@
+{
+	"info": {
+		"_postman_id": "2965d2a3-5ef5-476c-a3fd-f68fa138e6ed",
+		"name": "BDEA Social Network",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12927065"
+	},
+	"item": [
+		{
+			"name": "posts/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/posts/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "16571928"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "posts/followedUsers/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/posts/followedUsers/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						"followedUsers",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "194782699"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "posts/top25NewestFor/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/posts/top25NewestFor/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						"top25NewestFor",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "194782699"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "posts/contains/:words",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/posts/contains/:words",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						"contains",
+						":words"
+					],
+					"variable": [
+						{
+							"key": "words",
+							"value": "history%2Fitself"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "followers/count/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/followers/count/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"followers",
+						"count",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "16571928"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "followers/top100",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/followers/top100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"followers",
+						"top100"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "followers/top100FollowingTop100",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/followers/top100FollowingTop100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"followers",
+						"top100FollowingTop100"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/follows/count/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/users/follows/count/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"follows",
+						"count",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "16571928"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cache/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/cache/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"cache",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "2365831"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cache/:user_key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"author\": \"katyperry\",\r\n  \"content\": \"222Is history repeating itself...?#DONTNORMALIZEHATE https://t.co/ngG11quhmK\",\r\n  \"country\": \"null\",\r\n  \"date_time\": 1484250720,\r\n  \"id\": 819633000000000000,\r\n  \"language\": \"en\",\r\n  \"latitude\": \"null\",\r\n  \"longitude\": \"null\",\r\n  \"number_of_likes\": 7900,\r\n  \"number_of_shares\": 3472\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/cache/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"cache",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "2365831"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

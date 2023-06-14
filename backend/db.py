@@ -9,14 +9,18 @@ from . import db_util
 
 def setup_db(app: Flask, tweet_limit: int):
     with app.app_context():
+        db = get_db()
+        #initial_data_load(db, tweet_limit)
+
+
+def get_db() -> StandardDatabase:
+    if "db" not in g:
         client = ArangoClient(hosts="http://127.0.0.1:11001")
         sys_db = client.db('_system', username='root', password='passwd')
-
         if not sys_db.has_database('twitter2'):
             sys_db.create_database('twitter2')
-        db = client.db(name='twitter2', username='root', password='passwd')
-        g.db = db
-        initial_data_load(db, tweet_limit)
+        g.db = client.db(name='twitter2', username='root', password='passwd')
+    return g.db
 
 
 def initial_data_load(db: StandardDatabase, tweet_limit: int):
@@ -27,7 +31,7 @@ def initial_data_load(db: StandardDatabase, tweet_limit: int):
     tweet_ids, tweets = create_tweets(db, tweet_limit)
     create_author_relations(db, tweet_ids, tweets, users)
     #create_user_likes_relations(db, tweets, tweet_ids, users)
-    create_fanout(db, users)
+    #create_fanout(db, users)
     end = time.time()
     print("Finished initial data load, took {}".format(end - start))
 
