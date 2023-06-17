@@ -46,3 +46,5 @@ services:
     environment:
       - ARANGO_NO_AUTH=1
     command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://coordinator1:8529 --cluster.my-role COORDINATOR --cluster.agency-endpoint tcp://agency:8529
+    volumes:
+          - ./backend/resources:/data
