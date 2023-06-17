@@ -1,1 +1,18 @@
-<p>query3 works!</p>
+<h1>Top 100 Following</h1>
+
+<mat-divider></mat-divider>
+
+<div class="users">
+  <ng-container *ngIf="top100Users$ | async as top100Users; else loading">
+    <cdk-virtual-scroll-viewport itemSize="70" class="example-viewport">
+      <div *ngFor="let user of top100Users">
+        <app-user [user]="user.user" [following]="user.count"></app-user>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </ng-container>
+  <ng-template #loading>
+    <div class="spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+</div>

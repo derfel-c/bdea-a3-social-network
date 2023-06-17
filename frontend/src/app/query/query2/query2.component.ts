@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { share } from 'rxjs';
 import { QueryService } from '../services/query.service';
+import { share } from 'rxjs/operators';
 
 @Component({
   selector: 'app-query2',

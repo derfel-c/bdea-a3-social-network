@@ -14,18 +14,21 @@
 
 <mat-divider></mat-divider>
 
-<div class="tweets">
-  <ng-container *ngIf="(isLoading$ | async) === false">
-    <ng-container *ngIf="tweets$ | async as tweets; else noContent">
-      <div *ngFor="let tweet of tweets">
+<div class="tweets" *ngIf="user$ | async as user; else noContent">
+  <ng-container *ngIf="tweets$ | async as tweets; else loading">
+    <cdk-virtual-scroll-viewport itemSize="133" class="example-viewport">
+      <div *cdkVirtualFor="let tweet of tweets">
         <app-tweet [tweet]="tweet"></app-tweet>
       </div>
-    </ng-container>
-    <ng-template #noContent>
-      <span>No User Selected or no Tweets for this user</span>
-    </ng-template>
+    </cdk-virtual-scroll-viewport>
   </ng-container>
-  <div *ngIf="isLoading$ | async" class="spinner">
-    <mat-spinner></mat-spinner>
-  </div>
+  <ng-template #loading>
+    <div class="spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
 </div>
+
+<ng-template #noContent>
+  <span>No User Selected or no Tweets for this user</span>
+</ng-template>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, share, take, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
 import { Tweet } from 'src/app/api/models/tweet.interface';
 import { User } from 'src/app/api/models/user.interface';

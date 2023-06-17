@@ -113,15 +113,17 @@ def query_random_user_id(db: StandardDatabase):
 
 def query_random_user_id_with_tweets(db: StandardDatabase):
     query = """
-    FOR u IN users
-        FOR v, e IN 1..1 OUTBOUND u wrote
-            SORT RAND()
-            LIMIT 1
-            RETURN u._key
+    LET uniqueFroms = (
+        FOR w IN wrote
+        COLLECT fromValue = w._from WITH COUNT INTO num
+        RETURN fromValue
+        )
+
+        RETURN uniqueFroms[RAND() * LENGTH(uniqueFroms)]
     """
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
-    return result[0]
+    return result[0].replace("users/", "")
 
 
 def query_top25_newest_tweets_of_user(db: StandardDatabase, user_key: str):

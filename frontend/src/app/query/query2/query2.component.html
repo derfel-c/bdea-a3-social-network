@@ -4,9 +4,11 @@
 
 <div class="users">
   <ng-container *ngIf="top100Users$ | async as top100Users; else loading">
-    <div *ngFor="let user of top100Users">
-      <app-user [user]="user.user" [follower]="user.count"></app-user>
-    </div>
+    <cdk-virtual-scroll-viewport itemSize="70" class="example-viewport">
+      <div *ngFor="let user of top100Users">
+        <app-user [user]="user.user" [follower]="user.count"></app-user>
+      </div>
+    </cdk-virtual-scroll-viewport>
   </ng-container>
   <ng-template #loading>
     <div class="spinner">

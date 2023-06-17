@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { SharedModule } from '../shared/shared.module';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { SharedModule } from '../shared/shared.module';
     MatCardModule,
     MatProgressSpinnerModule,
     SharedModule,
+    ScrollingModule,
   ],
 })
 export class QueryModule {}
