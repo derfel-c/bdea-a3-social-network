@@ -1,0 +1,30 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-card {
+  height: 100%;
+
+  mat-card-subtitle {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.tweets {
+  height: 250px;
+  flex: 1;
+
+  .spinner {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+h3 {
+  margin: .5rem 0 .5rem 0;
+}

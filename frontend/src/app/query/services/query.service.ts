@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, retry } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
 import { Tweet } from 'src/app/api/models/tweet.interface';
 import { User } from 'src/app/api/models/user.interface';
@@ -30,10 +30,26 @@ export class QueryService {
   }
 
   public getTop100UsersWithMostFollowers(): Observable<{count: number, user: User}[]> {
-    return this._apiService.getTop100UsersWithMostFollowers();
+    return this._apiService.getTop100UsersWithMostFollowers().pipe(
+      retry()
+    );
   }
 
   public getTop100UsersFollowingTop100Users(): Observable<{count: number, user: User}[]> {
-    return this._apiService.getTop100UsersFollowingTop100Users();
+    return this._apiService.getTop100UsersFollowingTop100Users().pipe(
+      retry()
+    );
+  }
+
+  public getCountOfUsersUserFollows(userKey: string): Observable<{following_count: number, user: User}[]> {
+    return this._apiService.getCountOfUsersUserFollows(userKey);
+  }
+
+  public getFollowerCountOfUser(userKey: string): Observable<{follower_count: number, user: User}[]> {
+    return this._apiService.getFollowerCountOfUser(userKey);
+  }
+
+  public getTop25RecentTweets(userKey: string): Observable<Tweet[]> {
+    return this._apiService.getTop25NewestTweetsForUser(userKey);
   }
 }
