@@ -99,6 +99,31 @@ def query_count_user_is_following(db: StandardDatabase, user_key: str):
     return result
 
 
+def query_random_user_id(db: StandardDatabase):
+    query = """
+    FOR u IN users
+        SORT RAND()
+        LIMIT 1
+        RETURN u._key
+    """
+    cursor = db.aql.execute(query)
+    result = [res for res in cursor]
+    return result[0]
+
+
+def query_random_user_id_with_tweets(db: StandardDatabase):
+    query = """
+    FOR u IN users
+        FOR v, e IN 1..1 OUTBOUND u wrote
+            SORT RAND()
+            LIMIT 1
+            RETURN u._key
+    """
+    cursor = db.aql.execute(query)
+    result = [res for res in cursor]
+    return result[0]
+
+
 def query_top25_newest_tweets_of_user(db: StandardDatabase, user_key: str):
     query = """
     LET USERS = (

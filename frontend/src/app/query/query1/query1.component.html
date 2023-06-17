@@ -1,0 +1,31 @@
+<h1>Tweets of an User</h1>
+<h2 *ngIf="{ user: (user$ | async) } as local">
+  User: {{ local.user && local.user > 0 ? local.user : "No User selected" }}
+</h2>
+
+<div class="action-row">
+  <button mat-flat-button color="primary" (click)="getRandomUser()">
+    <span>Select Random User</span>
+  </button>
+  <button mat-flat-button color="primary" (click)="getRandomUserWithTweets()">
+    <span>Select Random User that has Tweets</span>
+  </button>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="tweets">
+  <ng-container *ngIf="(isLoading$ | async) === false">
+    <ng-container *ngIf="tweets$ | async as tweets; else noContent">
+      <div *ngFor="let tweet of tweets">
+        <app-tweet [tweet]="tweet"></app-tweet>
+      </div>
+    </ng-container>
+    <ng-template #noContent>
+      <span>No User Selected or no Tweets for this user</span>
+    </ng-template>
+  </ng-container>
+  <div *ngIf="isLoading$ | async" class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

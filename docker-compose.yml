@@ -2,6 +2,7 @@ version: '3'
 
 services:
   agency:
+    restart: always
     container_name: agency
     image: arangodb:latest
     ports:

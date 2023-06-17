@@ -1,0 +1,21 @@
+.date {
+  font-size: 14px;
+  font-weight: 200;
+}
+
+.action-row {
+  display: flex;
+  gap: 1rem;
+
+  .control {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .retweet-icon {
+    svg {
+      height: 24px;
+    }
+  }
+}
