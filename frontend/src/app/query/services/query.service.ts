@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, share, take, Observable } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
 import { Tweet } from 'src/app/api/models/tweet.interface';
+import { User } from 'src/app/api/models/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,14 @@ export class QueryService {
   }
 
   public getTweets(userId: string): Observable<Tweet[]> {
-    return this._apiService.getPostById(userId).pipe(share());
+    return this._apiService.getPostById(userId);
+  }
+
+  public getTop100UsersWithMostFollowers(): Observable<{count: number, user: User}[]> {
+    return this._apiService.getTop100UsersWithMostFollowers();
+  }
+
+  public getTop100UsersFollowingTop100Users(): Observable<{count: number, user: User}[]> {
+    return this._apiService.getTop100UsersFollowingTop100Users();
   }
 }
