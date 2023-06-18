@@ -117,8 +117,8 @@ def map_tweets_to_users(db: StandardDatabase, wrote_edge_collection: StandardCol
     return wrote_relations
 
 
-def create_likes(tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str, str]],
-                 output_file='resources/likes.json'):
+def create_likes(tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str, str]]):
+    output_file='resources/likes.json'
     script_dir = os.path.dirname(os.path.realpath(__file__))
     output_file = os.path.join(script_dir, output_file)
     max_like_count = max(tweets, key=lambda x: x["number_of_likes"])["number_of_likes"]
@@ -141,34 +141,45 @@ def create_likes(tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str,
             bar.next()
     bar.finish()
     end = time.time()
+    print(f"Finished creating like relations json file in {end - start} seconds")
 
     # docker exec -it coordinator1 arangoimport --file data/likes.json --type json --collection likes --server.username root --server.password passwd --server.database twitter2 --progress --overwrite
     command = ["docker", "exec", "-it", "coordinator1", "arangoimport", "--file", "data/likes.json", "--type", "json",
                "--collection", "likes", "--server.username", "root", "--server.password", "passwd", "--server.database",
                "twitter2", "--progress", "--overwrite"]
     run_command(command)
-    print(f"Finished creating like relations json file in {end - start} seconds")
 
 
-def create_fanout(db: StandardDatabase, collection: StandardCollection, users: List[str], limit: int):
+def create_fanout(db: StandardDatabase, users: List[str], limit: int):
+    output_file='resources/cache.json'
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    output_file = os.path.join(script_dir, 'resources/cache.json')
     start = time.time()
     count = 0
     bar = Bar('Creating USERS', max=len(users),
               suffix='%(index)d/%(max)d Users - ~%(eta)ds remaining - %(elapsed)ds elapsed', poll_interval=0.2)
-    for u in users:
-        count += 1
-        if limit != -1 and count > limit:
-            break
-        tweets = queries.query_posts_of_followed_users(db, u, "newest", -1)
-        relations = []
-        for t in tweets:
-            relations.append({"_from": u, "_to": "tweets/" + t["_key"]})
-        if len(tweets) > 0:
-            collection.insert_many(relations, overwrite=True)
-        bar.next()
-    end = time.time()
+    with open(output_file, 'w') as f:
+        for u in users:
+            count += 1
+            if limit != -1 and count > limit:
+                break
+            tweets = queries.query_posts_of_followed_users(db, u, "newest", -1)
+            relations = []
+            for t in tweets:
+                relations.append({"_from": u, "_to": "tweets/" + t["_key"]})
+            if len(tweets) > 0:
+                for relation in relations:
+                    f.write(json.dumps(relation) + '\n')
+            bar.next()
     bar.finish()
+    end = time.time()
     print(f"Finished creating fanout with limit {limit} and count {len(users)}, took {end - start} seconds")
+
+    # docker exec -it coordinator1 arangoimport --file data/likes.json --type json --collection likes --server.username root --server.password passwd --server.database twitter2 --progress --overwrite
+    command = ["docker", "exec", "-it", "coordinator1", "arangoimport", "--file", "data/cache.json", "--type", "json",
+               "--collection", "cache", "--server.username", "root", "--server.password", "passwd", "--server.database",
+               "twitter2", "--progress", "--overwrite"]
+    run_command(command)
 
 
 def run_command(command):
