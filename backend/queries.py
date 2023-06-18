@@ -1,4 +1,8 @@
+from functools import lru_cache
+import random
+import time
 from typing import List, Dict
+from flask import g
 
 from arango.database import StandardDatabase
 import json
@@ -128,24 +132,24 @@ def query_random_user_id_with_tweets(db: StandardDatabase):
     result = [res for res in cursor]
     return result[0].replace("users/", "")
 
-
-def query_random_user_id_with_followers_with_tweets(db: StandardDatabase):
+@lru_cache()
+def get_follows_wrote_users():
+    db = g.get("db")
     query = """
-    LET follows_wrote_users = (
     FOR user IN follows
         FOR tweet_relation IN wrote
         FILTER user._to == tweet_relation._from
         COLLECT followingUser = user._from WITH COUNT INTO num
         RETURN followingUser
-    )
-
-    LET uniqueFroms = follows_wrote_users
-
-    RETURN uniqueFroms[RAND() * LENGTH(uniqueFroms)]
     """
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
-    return result[0].replace("users/", "")
+    return result
+
+def query_random_user_id_with_followers_with_tweets(db: StandardDatabase):
+    follows_wrote_users = get_follows_wrote_users()
+    random_user = random.choice(follows_wrote_users)
+    return random_user.replace("users/", "")
 
 
 def query_user_ids_with_followers_with_tweets(db: StandardDatabase):
