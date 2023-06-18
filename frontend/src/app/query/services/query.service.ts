@@ -3,9 +3,14 @@ import {
   BehaviorSubject,
   Observable,
   filter,
+  from,
+  groupBy,
+  map,
+  mergeMap,
   retry,
   share,
   switchMap,
+  toArray,
 } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
 import { Post } from 'src/app/api/models/post.interface';
@@ -55,6 +60,10 @@ export class QueryService {
     return this._apiService.getUserById(userId);
   }
 
+  public getUserByTweetId(tweetId: string): Observable<User> {
+    return this._apiService.getUserByTweetId(tweetId);
+  }
+
   public getTop100UsersWithMostFollowers(): Observable<
     { count: number; user: User }[]
   > {
@@ -93,5 +102,9 @@ export class QueryService {
 
   public getTop25PostsContainingWords(words: string): Observable<Post[]> {
     return this._apiService.getTop25PostsContainingWords(words);
+  }
+
+  public postTweetsForUserFromCache(userKey: string, post: Omit<Post, '_id'|'_key'|'_rev'|'id'>): Observable<any> {
+    return this._apiService.postTweetsForUserFromCache(userKey, post);
   }
 }

@@ -49,6 +49,13 @@ def get_user_by_id(user_key: str):
     return result
 
 
+@bp.route("/users/tweet/<path:tweet_key>", methods=["GET"])
+def get_user_by_tweet_id(tweet_key: str):
+    db_client = db.get_db()
+    result = queries.query_user_by_tweet_id(db_client, tweet_key)
+    return result
+
+
 @bp.route("/users/follows/count/<path:user_key>", methods=["GET"])
 def get_count_of_users_user_follows(user_key: str):
     db_client = db.get_db()
@@ -106,8 +113,7 @@ def post_tweets_for_user_from_cache(user_key: str):
         return f"No post provided", 400
     if not user_key:
         return f"No user_key provided", 400
-    user_id = queries.query_users_user_follows(db_client, user_key, 1)[0]
-    result = queries.insert_tweet_for_user_in_cache(db_client, user_id, post)
+    result = queries.insert_tweet_for_user_in_cache(db_client, user_key, post)
     return result
 
 

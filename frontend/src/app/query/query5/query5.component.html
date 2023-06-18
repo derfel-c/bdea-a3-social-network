@@ -1,4 +1,4 @@
-<h1>Fanout Cache</h1>
+<h1>Fanout Cache sorted by date</h1>
 
 <h2 *ngIf="{ user: (user$ | async) } as local">
   User: {{ local.user ? local.user.name : "No User selected" }}
@@ -15,18 +15,38 @@
   >
     <span>Select Random User that Follows Users with Tweets</span>
   </button>
+  <ng-container *ngIf="tweets$ | async as tweets">
+    <button
+      *ngIf="tweets.length > 0"
+      mat-flat-button
+      color="primary"
+      (click)="generateTweet(tweets)"
+    >
+      <span
+        >Generate Random Tweet for a User that is Followed by this user</span
+      >
+    </button>
+  </ng-container>
 </div>
 
 <mat-divider></mat-divider>
 
 <div class="tweets">
   <ng-container *ngIf="tweets$ | async as tweets; else noContent">
-    <cdk-virtual-scroll-viewport *ngIf="tweets.length > 0" itemSize="133" class="example-viewport">
+    <cdk-virtual-scroll-viewport
+      *ngIf="tweets.length > 0"
+      itemSize="133"
+      class="example-viewport"
+    >
       <div *cdkVirtualFor="let tweet of tweets">
         <app-tweet [tweet]="tweet"></app-tweet>
       </div>
     </cdk-virtual-scroll-viewport>
-    <span *ngIf="tweets.length <= 0 && (loading$ | async) == false" class="no-content">No Tweets found for this user</span>
+    <span
+      *ngIf="tweets.length <= 0 && (loading$ | async) == false"
+      class="no-content"
+      >No Tweets found for this user</span
+    >
   </ng-container>
 </div>
 

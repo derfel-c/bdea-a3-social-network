@@ -1,6 +1,18 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject, Observable, map, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  from,
+  groupBy,
+  map,
+  mergeMap,
+  switchMap,
+  tap,
+  toArray,
+} from 'rxjs';
+import { Post } from 'src/app/api/models/post.interface';
 import { Tweet } from 'src/app/api/models/tweet.interface';
+import { User } from 'src/app/api/models/user.interface';
 import { QueryService } from '../services/query.service';
 
 @Component({
@@ -15,29 +27,59 @@ export class Query4Component {
     switchMap((user) =>
       this._queryService.getCountOfUsersUserFollows(user._key)
     ),
-    map((x) => x.length > 0 ? x[0].following_count : 0)
+    map((x) => (x.length > 0 ? x[0].following_count : 0))
   );
 
   public followers$ = this.user$.pipe(
-    switchMap((user) =>
-      this._queryService.getFollowerCountOfUser(user._key)
-    ),
-    map((x) => x.length > 0 ? x[0].follower_count : 0)
+    switchMap((user) => this._queryService.getFollowerCountOfUser(user._key)),
+    map((x) => (x.length > 0 ? x[0].follower_count : 0))
   );
 
   public top25RecentTweets$: Observable<Tweet[]> = this.user$.pipe(
     switchMap((user) =>
-      this._queryService.getTop25RecentTweets(user._key)
+      this._queryService.getTop25RecentTweets(user._key).pipe(
+        mergeMap((posts: Post[]) => from(posts)),
+        groupBy((post) => post.author),
+        mergeMap((group$) =>
+          group$.pipe(
+            toArray(),
+            mergeMap((posts: Post[]) =>
+              this._queryService
+                .getUserByTweetId(posts[0]._key)
+                .pipe(
+                  map((user: User) => posts.map((post) => ({ post, user })))
+                )
+            ),
+            mergeMap((posts) => posts)
+          )
+        ),
+        toArray()
+      )
     ),
-    map((x) => x.map((y) => ({post: y} as Tweet))),
     tap(() => this._loading$$.next(false))
   );
 
   public top25PopularTweets$ = this.user$.pipe(
     switchMap((user) =>
-      this._queryService.getTop25PopularTweetsForUser(user._key)
+      this._queryService.getTop25PopularTweetsForUser(user._key).pipe(
+        mergeMap((posts: Post[]) => from(posts)),
+        groupBy((post) => post.author),
+        mergeMap((group$) =>
+          group$.pipe(
+            toArray(),
+            mergeMap((posts: Post[]) =>
+              this._queryService
+                .getUserByTweetId(posts[0]._key)
+                .pipe(
+                  map((user: User) => posts.map((post) => ({ post, user })))
+                )
+            ),
+            mergeMap((posts) => posts)
+          )
+        ),
+        toArray()
+      )
     ),
-    map((x) => x.map((y) => ({post: y} as Tweet))),
     tap(() => this._loading$$.next(false))
   );
 

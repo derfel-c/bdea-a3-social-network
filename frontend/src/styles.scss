@@ -9,6 +9,7 @@ h1, h2 {
   display: flex;
   gap: 1rem;
   margin: 1rem;
+  flex-wrap: wrap;
 }
 
 .mat-mdc-card {

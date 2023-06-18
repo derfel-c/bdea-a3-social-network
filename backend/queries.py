@@ -64,6 +64,24 @@ def query_user_by_id(db: StandardDatabase, user_id: str):
     return result[0]
 
 
+def query_user_by_tweet_id(db: StandardDatabase, user_id: str):
+    query = """
+    LET user_ids = (
+        FOR w IN wrote
+            FILTER w._to == 'tweets/{}'
+            LIMIT 1
+            RETURN w._from
+    )
+    FOR u IN users
+        FILTER u._id IN user_ids
+        LIMIT 1
+        RETURN u
+    """.format(user_id)
+    cursor = db.aql.execute(query)
+    result = [res for res in cursor]
+    return result[0]
+
+
 def query_users_with_most_followers(db: StandardDatabase, qty: int = 100):
     limit_string = ""
     if qty != -1:
@@ -193,27 +211,11 @@ def query_top25_tweets_of_followed_user(db: StandardDatabase, user_key: str, mod
     return result
 
 
-def query_users_user_follows(db: StandardDatabase, user_key: str, limit: int = -1):
-    if limit != -1:
-        limit_str = "LIMIT {}".format(limit)
-    else:
-        limit_str = ""
-    query = """
-    FOR f IN follows
-      FILTER f._from == 'users/{}'
-      {}
-      RETURN f._to
-    """.format(user_key, limit_str)
-    cursor = db.aql.execute(query)
-    result = [res for res in cursor]
-    return result
-
-
 def query_tweets_for_user_from_cache(db: StandardDatabase, user_key: str):
     query = """
       FOR f IN cache
         FILTER f._from == 'users/{}'
-        SORT DOCUMENT(f._to).dateTime DESC
+        SORT DOCUMENT(f._to).date_time DESC
         LIMIT {}
         RETURN DOCUMENT(f._to)
     """.format(user_key, 100)
@@ -246,18 +248,19 @@ def query_top25_posts_containing_words(db: StandardDatabase, words: List[str]):
 def insert_tweet_for_user_in_cache(db: StandardDatabase, user_id: str, tweet):
     query = """
     let tweet = (INSERT {{
+      author: '{}',
       content: '{}',
       country: '{}',
-      dateTime: {},
+      date_time: {},
       language: '{}',
       latitude: '{}',
       longitude: '{}',
-      numberOfLikes: '{}',
-      numberOfShares: '{}'
+      number_of_likes: '{}',
+      number_of_shares: '{}'
     }} INTO tweets RETURN NEW)
 
     FOR f IN follows
-      FILTER f._to == '{}'
+      FILTER f._to == 'users/{}'
       UPSERT {{
         _from: f._from,
         _to: tweet[0]._id
@@ -268,7 +271,16 @@ def insert_tweet_for_user_in_cache(db: StandardDatabase, user_id: str, tweet):
       }}
       UPDATE {{ }}
       IN cache
+    
+    INSERT {{
+        _from: 'users/{}',
+        _to: tweet[0]._id
+        }}
+        IN wrote
+
+    RETURN tweet
     """.format(
+        tweet["author"],
         tweet["content"],
         tweet["country"],
         tweet["date_time"],
@@ -277,7 +289,8 @@ def insert_tweet_for_user_in_cache(db: StandardDatabase, user_id: str, tweet):
         tweet["longitude"],
         tweet["number_of_likes"],
         tweet["number_of_shares"],
+        user_id,
         user_id)
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
-    return result
+    return result[0]

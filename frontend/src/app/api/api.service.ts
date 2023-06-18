@@ -38,6 +38,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/users/${userKey}`);
   }
 
+  getUserByTweetId(tweetKey: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users/tweet/${tweetKey}`);
+  }
+
   getRandomUser(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users/random`);
   }
