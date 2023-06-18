@@ -39,9 +39,9 @@ def query_posts_of_followed_users(db: StandardDatabase, user_id: str, mode: str 
 
 def query_posts_of_user(db: StandardDatabase, user_id: str):
     query = """
-    FOR w IN wrote
-      FILTER w._from == 'users/{}'
-      RETURN {{user: DOCUMENT(w._from), post: DOCUMENT(w._to)}}
+    FOR v, e IN 1..1 OUTBOUND 'users/{}' GRAPH 'TwitterGraph'
+    FILTER IS_SAME_COLLECTION('wrote', e)
+    RETURN {{user: v, post: DOCUMENT(e._to)}}
     """.format(user_id)
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
