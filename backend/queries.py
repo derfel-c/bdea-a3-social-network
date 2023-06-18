@@ -182,10 +182,10 @@ def query_top25_tweets_of_followed_user(db: StandardDatabase, user_key: str, mod
         
         FOR t IN tweets
             FILTER t._id IN tweetsFromFollowedUsers
-            SORT t.date_time DESC
+            SORT {} DESC
             LIMIT 25
             RETURN t
-    """.format(user_key)
+    """.format(user_key, sort_field)
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
     return result
