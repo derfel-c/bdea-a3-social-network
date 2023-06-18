@@ -1,0 +1,10 @@
+LET user_ids = (
+    FOR w IN wrote
+        FILTER w._to == 'tweets/{}'
+        LIMIT 1
+        RETURN w._from
+)
+FOR u IN users
+    FILTER u._id IN user_ids
+    LIMIT 1
+    RETURN u

@@ -1,0 +1,4 @@
+FOR f IN follows
+    FILTER f._from == 'users/{}'
+    COLLECT id = f._from WITH COUNT INTO count
+    RETURN { user: DOCUMENT(id), following_count:count}

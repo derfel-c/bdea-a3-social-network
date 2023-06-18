@@ -1,0 +1,5 @@
+FOR user IN follows
+    FOR tweet_relation IN wrote
+    FILTER user._to == tweet_relation._from
+    COLLECT followingUser = user._from WITH COUNT INTO num
+    RETURN followingUser

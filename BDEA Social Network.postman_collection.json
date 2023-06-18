@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "2965d2a3-5ef5-476c-a3fd-f68fa138e6ed",
+		"_postman_id": "b120332f-09b4-414f-91ce-66672734cfee",
 		"name": "BDEA Social Network",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "12927065"
+		"_exporter_id": "11515235"
 	},
 	"item": [
 		{
@@ -27,7 +27,7 @@
 					"variable": [
 						{
 							"key": "user_key",
-							"value": "16571928"
+							"value": "31331740"
 						}
 					]
 				}
@@ -85,7 +85,7 @@
 					"variable": [
 						{
 							"key": "user_key",
-							"value": "194782699"
+							"value": "222261763"
 						}
 					]
 				}
@@ -114,7 +114,7 @@
 					"variable": [
 						{
 							"key": "words",
-							"value": "history%2Fitself"
+							"value": "oy the little things in life. They ma"
 						}
 					]
 				}
@@ -143,7 +143,7 @@
 					"variable": [
 						{
 							"key": "user_key",
-							"value": "16571928"
+							"value": "34117454"
 						}
 					]
 				}
@@ -217,8 +217,131 @@
 					"variable": [
 						{
 							"key": "user_key",
-							"value": "16571928"
+							"value": "107293819"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/random",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/users/random",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"random"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/:user_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/users/:user_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						":user_key"
+					],
+					"variable": [
+						{
+							"key": "user_key",
+							"value": "29533683"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/tweet/:tweet_key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/users/tweet/:tweet_key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"tweet",
+						":tweet_key"
+					],
+					"variable": [
+						{
+							"key": "tweet_key",
+							"value": "29720781"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/randomWithTweets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/users/randomWithTweets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"randomWithTweets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/randomWithFollowersWithTweets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/users/randomWithFollowersWithTweets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"randomWithFollowersWithTweets"
 					]
 				}
 			},
@@ -245,7 +368,7 @@
 					"variable": [
 						{
 							"key": "user_key",
-							"value": "2365831"
+							"value": "14365883"
 						}
 					]
 				}

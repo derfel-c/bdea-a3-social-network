@@ -1,0 +1,32 @@
+let tweet = (INSERT {{
+    author: '{}',
+    content: '{}',
+    country: '{}',
+    date_time: {},
+    language: '{}',
+    latitude: '{}',
+    longitude: '{}',
+    number_of_likes: '{}',
+    number_of_shares: '{}'
+}} INTO tweets RETURN NEW)
+
+FOR f IN follows
+    FILTER f._to == 'users/{}'
+    UPSERT {{
+    _from: f._from,
+    _to: tweet[0]._id
+    }}
+    INSERT {{
+    _from: f._from,
+    _to: tweet[0]._id
+    }}
+    UPDATE {{ }}
+    IN cache
+
+INSERT {{
+    _from: 'users/{}',
+    _to: tweet[0]._id
+    }}
+    IN wrote
+
+RETURN tweet

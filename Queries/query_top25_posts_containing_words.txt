@@ -1,0 +1,16 @@
+FOR t IN tweets
+    {}
+    SORT t.numberOfLikes DESC
+    LIMIT 25
+    RETURN t
+
+# Zusammenbau des Filters erfolgt wie folgt:
+#
+# filter_str = ""
+# for w in words:
+#    if filter_str != "":
+#        filter_str += " && "
+#    filter_str += 'CONTAINS(LOWER(t.content), LOWER("' + w + '"))'
+#
+# if filter_str != "":
+#    filter_str = "FILTER " + filter_str

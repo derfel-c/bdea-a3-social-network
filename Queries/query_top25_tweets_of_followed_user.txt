@@ -1,0 +1,17 @@
+LET followedUsers = (
+    FOR f IN follows
+        FILTER f._from == 'users/{}'
+        RETURN f._to
+    )
+        
+LET tweetsFromFollowedUsers = (
+    FOR w IN wrote
+        FILTER w._from IN followedUsers
+        RETURN w._to
+    )
+        
+FOR t IN tweets
+    FILTER t._id IN tweetsFromFollowedUsers
+    SORT {} DESC # Entweder t.date_time oder t.number_of_likes
+    LIMIT 25
+    RETURN t

@@ -1,0 +1,5 @@
+FOR f IN cache
+    FILTER f._from == 'users/{}'
+    SORT DOCUMENT(f._to).date_time DESC
+    LIMIT {}
+    RETURN DOCUMENT(f._to)

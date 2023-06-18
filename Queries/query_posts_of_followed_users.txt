@@ -1,0 +1,17 @@
+LET followedUsers = (
+    FOR f IN follows
+        FILTER f._from == '{}'
+        RETURN f._to
+    )
+
+LET tweetsFromFollowedUsers = (
+    FOR w IN wrote
+        FILTER w._from IN followedUsers
+        RETURN w._to
+    )
+
+FOR t IN tweets
+	FILTER t._id IN tweetsFromFollowedUsers
+    SORT {} DESC
+    {} # optionaler LIMIT
+    RETURN t 

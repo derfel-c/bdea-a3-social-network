@@ -1,0 +1,5 @@
+FOR f IN follows
+    COLLECT id = f._to WITH COUNT INTO count
+    SORT count DESC
+    {} # Optionaler LIMIT
+    RETURN {{ user: DOCUMENT(id), count:count}}

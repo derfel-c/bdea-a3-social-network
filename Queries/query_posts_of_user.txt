@@ -1,0 +1,4 @@
+    FOR v, e IN 1..1 OUTBOUND 'users/{}' 
+	GRAPH 'TwitterGraph'
+    FILTER IS_SAME_COLLECTION('wrote', e)
+    RETURN {{user: v, post: DOCUMENT(e._to)}}

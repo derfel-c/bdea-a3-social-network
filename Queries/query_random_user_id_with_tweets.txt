@@ -1,0 +1,7 @@
+LET uniqueFroms = (
+    FOR w IN wrote
+    COLLECT fromValue = w._from WITH COUNT INTO num
+    RETURN fromValue
+)
+
+RETURN uniqueFroms[RAND() * LENGTH(uniqueFroms)]

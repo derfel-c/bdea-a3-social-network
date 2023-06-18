@@ -1,0 +1,20 @@
+query = (
+    "LET USERS = ("
+    "FOR f IN follows "
+    "FILTER f._from == 'users/' + '" + user_key + "' "
+    "RETURN f._to "
+    ")"
+
+    "LET followedTweets = ("
+    "FOR w IN wrote "
+    "FILTER w._from IN USERS "
+    "RETURN w._to "
+    ")"
+
+    "FOR t IN tweets "
+    "FILTER t._id IN followedTweets "
+    "SORT t.date_time DESC "
+    "LIMIT 25 "
+
+    "RETURN t"
+)
