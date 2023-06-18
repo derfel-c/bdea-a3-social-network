@@ -148,7 +148,7 @@ def query_random_user_id_with_followers_with_tweets(db: StandardDatabase):
     return result[0].replace("users/", "")
 
 
-def query_user_ids_with_followers_with_tweets(db: StandardDatabase):
+def query_user_ids_where_followed_users_have_tweets(db: StandardDatabase):
     query = """
     FOR user IN follows
         FOR tweet_relation IN wrote

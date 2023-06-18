@@ -82,7 +82,7 @@ def create_user_likes_relations(db: StandardDatabase, tweets: List[Dict], tweet_
 
 
 def create_fanout(db: StandardDatabase):
-    users_with_tweets = queries.query_user_ids_with_followers_with_tweets(db)
+    users_with_tweets = queries.query_user_ids_where_followed_users_have_tweets(db)
     if not db.has_collection('cache'):
         cache_edge_collection = db.create_collection('cache', edge=True)
     else:
