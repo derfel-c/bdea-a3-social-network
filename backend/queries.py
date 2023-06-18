@@ -14,20 +14,20 @@ def query_posts_of_followed_users(db: StandardDatabase, user_id: str, mode: str 
     if limit != -1:
         limit_string = "LIMIT {}".format(limit)
     query = """
-        LET USERS = (
+        LET followedUsers = (
         FOR f IN follows
-              FILTER f._from == 'users/{}'
+              FILTER f._from == '{}'
               RETURN f._to
         )
 
-        LET followedTweets = (
+        LET tweetsFromFollowedUsers = (
         FOR w IN wrote
-            FILTER w._from IN USERS
+            FILTER w._from IN followedUsers
             RETURN w._to
         )
 
         FOR t IN tweets
-            FILTER t._id IN followedTweets
+            FILTER t._id IN tweetsFromFollowedUsers
             SORT {} DESC
             {}
             RETURN t 
@@ -48,14 +48,17 @@ def query_posts_of_user(db: StandardDatabase, user_id: str):
     return result
 
 
-def query_users_with_most_followers(db: StandardDatabase, qty: int):
+def query_users_with_most_followers(db: StandardDatabase, qty: int = 100):
+    limit_string = ""
+    if qty != -1:
+        limit_string = "LIMIT {}".format(qty)
     query = """
     FOR f IN follows
       COLLECT id = f._to WITH COUNT INTO count
       SORT count DESC
-      LIMIT {}
+      {}
       RETURN {{ user: DOCUMENT(id), count:count}}
-    """.format(qty)
+    """.format(limit_string)
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
     return result
@@ -145,22 +148,40 @@ def query_random_user_id_with_followers_with_tweets(db: StandardDatabase):
     return result[0].replace("users/", "")
 
 
-def query_top25_newest_tweets_of_user(db: StandardDatabase, user_key: str):
+def query_user_ids_with_followers_with_tweets(db: StandardDatabase):
     query = """
-    LET USERS = (
+    FOR user IN follows
+        FOR tweet_relation IN wrote
+        FILTER user._to == tweet_relation._from
+        COLLECT followingUser = user._from WITH COUNT INTO num
+        RETURN followingUser
+    """
+    cursor = db.aql.execute(query)
+    result = [res for res in cursor]
+    return result
+
+
+def query_top25_tweets_of_followed_user(db: StandardDatabase, user_key: str, mode ="newest"):
+    if mode == "newest":
+        sort_field = "t.date_time"
+    else:
+        sort_field = "t.number_of_likes"
+
+    query = """
+    LET followedUsers = (
         FOR f IN follows
               FILTER f._from == 'users/{}'
               RETURN f._to
         )
         
-        LET followedTweets = (
+        LET tweetsFromFollowedUsers = (
         FOR w IN wrote
-            FILTER w._from IN USERS
+            FILTER w._from IN followedUsers
             RETURN w._to
         )
         
         FOR t IN tweets
-            FILTER t._id IN followedTweets
+            FILTER t._id IN tweetsFromFollowedUsers
             SORT t.date_time DESC
             LIMIT 25
             RETURN t

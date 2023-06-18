@@ -73,7 +73,14 @@ def get_random_user_id_with_followers_with_tweets():
 @bp.route("/posts/top25NewestFor/<path:user_key>", methods=["GET"])
 def get_top_25_newest_tweets_for_user(user_key: str):
     db_client = db.get_db()
-    result = queries.query_top25_newest_tweets_of_user(db_client, user_key)
+    result = queries.query_top25_tweets_of_followed_user(db_client, user_key, "newest")
+    return result
+
+
+@bp.route("/posts/top25PopularFor/<path:user_key>", methods=["GET"])
+def get_top_25_popular_tweets_for_user(user_key: str):
+    db_client = db.get_db()
+    result = queries.query_top25_tweets_of_followed_user(db_client, user_key, "popular")
     return result
 
 

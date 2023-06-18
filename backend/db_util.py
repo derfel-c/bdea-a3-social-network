@@ -29,7 +29,8 @@ def read_users() -> List[Dict[str, str]]:
                 unique_user_ids.add(user_ids[0])
             if user_ids[1]:
                 unique_user_ids.add(user_ids[1])
-        bar = Bar('Creating USERS', max=len(unique_user_ids), suffix='%(index)d/%(max)d Users - ~%(eta)ds remaining - %(elapsed)ds elapsed', poll_interval=0.2)
+        bar = Bar('Creating USERS', max=len(unique_user_ids),
+                  suffix='%(index)d/%(max)d Users - ~%(eta)ds remaining - %(elapsed)ds elapsed', poll_interval=0.2)
         for u in unique_user_ids:
             bar.next()
             users.append({"_key": u, "name": person.full_name()})
@@ -43,7 +44,8 @@ def create_followers(collection: StandardCollection):
     with open(file_path, 'r', encoding='utf8') as f:
         num_lines = sum(1 for _ in f)
         f.seek(0)
-        bar = Bar('Creating FOLLOWER relations', max=num_lines, suffix='%(index)d/%(max)d Follower relations - ~%(eta)ds remaining - %(elapsed)ds elapsed')
+        bar = Bar('Creating FOLLOWER relations', max=num_lines,
+                  suffix='%(index)d/%(max)d Follower relations - ~%(eta)ds remaining - %(elapsed)ds elapsed')
         follower_relations = []
         start = time.time()
         count = 0
@@ -76,7 +78,7 @@ def create_tweets(tweets_collection: StandardCollection, tweet_limit: int) -> Tu
     tweet_df["number_of_shares"] = pd.to_numeric(tweet_df["number_of_shares"])
     tweet_df["date_time"] = pd.to_datetime(tweet_df["date_time"], format="%d/%m/%Y %H:%M").map(pd.Timestamp.timestamp)
     tweets = tweet_df.to_dict('records')
-    
+
     if tweet_limit != -1 and tweet_limit < len(tweets):
         tweets = tweets[0:tweet_limit]
     result = tweets_collection.insert_many(tweets, overwrite=True)
@@ -86,8 +88,10 @@ def create_tweets(tweets_collection: StandardCollection, tweet_limit: int) -> Tu
     return tweet_ids, tweets
 
 
-def map_tweets_to_users(wrote_edge_collection: StandardCollection, tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str, str]]) -> List[Dict[str, str]]:
+def map_tweets_to_users(db: StandardDatabase, wrote_edge_collection: StandardCollection, tweets: List[Dict], tweet_ids: List[str]) -> List[Dict[str, str]]:
     start = time.time()
+    print("Querying users with most followers...")
+    users = queries.query_users_with_most_followers(db, -1)
     # Create mapping between author and actual tweets
     tweet_author_mapping = {}
     for idx, t in enumerate(tweets):
@@ -100,7 +104,7 @@ def map_tweets_to_users(wrote_edge_collection: StandardCollection, tweets: List[
     for idx, tweet_indices in enumerate(tweet_author_mapping.values()):
         if idx >= len(users):
             break
-        tweet_user_mapping[users[idx]["_key"]] = tweet_indices
+        tweet_user_mapping[users[idx]["user"]["_key"]] = tweet_indices
 
     # Create relations fit for the db
     wrote_relations = []
@@ -113,7 +117,8 @@ def map_tweets_to_users(wrote_edge_collection: StandardCollection, tweets: List[
     return wrote_relations
 
 
-def create_likes(tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str, str]], output_file = 'resources/likes.json'):
+def create_likes(tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str, str]],
+                 output_file='resources/likes.json'):
     script_dir = os.path.dirname(os.path.realpath(__file__))
     output_file = os.path.join(script_dir, output_file)
     max_like_count = max(tweets, key=lambda x: x["number_of_likes"])["number_of_likes"]
@@ -121,43 +126,53 @@ def create_likes(tweets: List[Dict], tweet_ids: List[str], users: List[Dict[str,
     start = time.time()
     tweets_len = len(tweets)
     number_of_users = len(users)
-    bar = Bar('Creating likes.json', max=tweets_len, suffix='%(index)d/%(max)d tweets - ~%(eta)ds remaining - %(elapsed)ds elapsed')
+    bar = Bar('Creating likes.json', max=tweets_len,
+              suffix='%(index)d/%(max)d tweets - ~%(eta)ds remaining - %(elapsed)ds elapsed')
     with open(output_file, 'w') as f:
         for idx, t in enumerate(tweets):
             relations = []
             for i in range(0, int(t["number_of_likes"] / share)):
                 random_user_idx = random.randint(0, number_of_users - 1)
                 if users[random_user_idx]:
-                    relations.append({"_from": "users/" + users[random_user_idx]["_key"], "_to": "tweets/" + tweet_ids[idx]})
+                    relations.append(
+                        {"_from": "users/" + users[random_user_idx]["_key"], "_to": "tweets/" + tweet_ids[idx]})
             for relation in relations:
                 f.write(json.dumps(relation) + '\n')
             bar.next()
     bar.finish()
     end = time.time()
-    
+
     # docker exec -it coordinator1 arangoimport --file data/likes.json --type json --collection likes --server.username root --server.password passwd --server.database twitter2 --progress --overwrite
-    command = [ "docker", "exec", "-it", "coordinator1", "arangoimport", "--file", "data/likes.json", "--type", "json", "--collection", "likes", "--server.username", "root", "--server.password", "passwd", "--server.database", "twitter2", "--progress", "--overwrite"]
+    command = ["docker", "exec", "-it", "coordinator1", "arangoimport", "--file", "data/likes.json", "--type", "json",
+               "--collection", "likes", "--server.username", "root", "--server.password", "passwd", "--server.database",
+               "twitter2", "--progress", "--overwrite"]
     run_command(command)
     print(f"Finished creating like relations json file in {end - start} seconds")
 
 
-def create_fanout(db: StandardDatabase, collection: StandardCollection, users: List[Dict[str, str]], limit: int):
+def create_fanout(db: StandardDatabase, collection: StandardCollection, users: List[str], limit: int):
     start = time.time()
     count = 0
+    bar = Bar('Creating USERS', max=len(users),
+              suffix='%(index)d/%(max)d Users - ~%(eta)ds remaining - %(elapsed)ds elapsed', poll_interval=0.2)
     for u in users:
         count += 1
         if limit != -1 and count > limit:
             break
-        tweets = queries.query_posts_of_followed_users(db, u["_key"], "newest", -1)
+        tweets = queries.query_posts_of_followed_users(db, u, "newest", -1)
         relations = []
         for t in tweets:
-            relations.append({"_from": "users/" + u["_key"], "_to": "tweets/" + t["_key"]})
-        collection.insert_many(relations, overwrite=True)
+            relations.append({"_from": u, "_to": "tweets/" + t["_key"]})
+        if len(tweets) > 0:
+            collection.insert_many(relations, overwrite=True)
+        bar.next()
     end = time.time()
-    print(f"Finished creating fanout with limit {100}, took {end - start} seconds")
+    bar.finish()
+    print(f"Finished creating fanout with limit {limit} and count {len(users)}, took {end - start} seconds")
+
 
 def run_command(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     for line in iter(process.stdout.readline, b''):
-            print(line.decode('utf-8'), end='')
+        print(line.decode('utf-8'), end='')

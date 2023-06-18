@@ -5,6 +5,7 @@ from typing import List, Dict, Tuple
 import time
 
 from . import db_util
+from . import queries
 
 
 def setup_db(app: Flask, tweet_limit: int):
@@ -32,9 +33,9 @@ def initial_data_load(db: StandardDatabase, tweet_limit: int):
     users = create_users(db)
     create_follower_relations(db)
     tweet_ids, tweets = create_tweets(db, tweet_limit)
-    create_author_relations(db, tweet_ids, tweets, users)
+    create_author_relations(db, tweet_ids, tweets)
     create_user_likes_relations(db, tweets, tweet_ids, users)
-    create_fanout(db, users)
+    create_fanout(db)
     end = time.time()
     print("Finished initial data load, took {}".format(end - start))
 
@@ -65,13 +66,12 @@ def create_tweets(db: StandardDatabase, tweet_limit: int) -> Tuple[List[str], Li
     return db_util.create_tweets(tweets_collection, tweet_limit)
 
 
-def create_author_relations(db: StandardDatabase, tweet_ids: List[str], tweets: List[Dict],
-                            users: List[Dict[str, str]]):
+def create_author_relations(db: StandardDatabase, tweet_ids: List[str], tweets: List[Dict]):
     if not db.has_collection('wrote'):
         wrote_edge_collection = db.create_collection('wrote', edge=True)
     else:
         wrote_edge_collection = db.collection('wrote')
-    db_util.map_tweets_to_users(wrote_edge_collection, tweets, tweet_ids, users)
+    db_util.map_tweets_to_users(db, wrote_edge_collection, tweets, tweet_ids)
 
 
 def create_user_likes_relations(db: StandardDatabase, tweets: List[Dict], tweet_ids: List[str],
@@ -81,9 +81,10 @@ def create_user_likes_relations(db: StandardDatabase, tweets: List[Dict], tweet_
     db_util.create_likes(tweets, tweet_ids, users)
 
 
-def create_fanout(db: StandardDatabase, users: List[Dict[str, str]]):
+def create_fanout(db: StandardDatabase):
+    users_with_tweets = queries.query_user_ids_with_followers_with_tweets(db)
     if not db.has_collection('cache'):
         cache_edge_collection = db.create_collection('cache', edge=True)
     else:
         cache_edge_collection = db.collection('cache')
-    db_util.create_fanout(db, cache_edge_collection, users, 100)
+    db_util.create_fanout(db, cache_edge_collection, users_with_tweets, 100)
