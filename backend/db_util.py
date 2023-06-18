@@ -156,7 +156,7 @@ def create_fanout(db: StandardDatabase, users: List[str], limit: int):
     output_file = os.path.join(script_dir, 'resources/cache.json')
     start = time.time()
     count = 0
-    bar = Bar('Creating USERS', max=len(users),
+    bar = Bar('Creating CACHE', max=len(users),
               suffix='%(index)d/%(max)d Users - ~%(eta)ds remaining - %(elapsed)ds elapsed', poll_interval=0.2)
     with open(output_file, 'w') as f:
         for u in users:

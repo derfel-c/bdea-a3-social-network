@@ -160,3 +160,4 @@ cython_debug/
 .idea/
 backend/resources/likes.json
 .vscode/
+backend/resources/cache.json
