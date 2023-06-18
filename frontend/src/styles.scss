@@ -22,3 +22,11 @@ cdk-virtual-scroll-viewport {
 .highlight-number {
   color: black;
 }
+
+.mat-mdc-tab-body-wrapper {
+  height: 100%;
+}
+
+.mat-mdc-tab-body-content {
+  display: flex;
+}

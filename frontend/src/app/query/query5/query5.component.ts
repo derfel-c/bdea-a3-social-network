@@ -24,7 +24,7 @@ export class Query5Component {
     this._queryService.getRandomUser();
   }
 
-  public getRandomUserWithTweets() {
-    this._queryService.getRandomUserWithTweets();
+  public getRandomUserWithFollowersWithTweets() {
+    this._queryService.getRandomUserWithFollowersWithTweets();
   }
 }
