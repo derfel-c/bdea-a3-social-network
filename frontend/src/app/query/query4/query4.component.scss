@@ -34,11 +34,13 @@ h3 {
   margin: .5rem 0 .5rem 0;
 }
 
-.no-content {
-  margin: 1rem;
-}
-
-
 mat-tab-group {
   height: 100%;
+}
+
+.scroll-area {
+  height: 100%;
+  overflow-y: auto;
+  will-change: scroll-position;
+  contain: strict;
 }

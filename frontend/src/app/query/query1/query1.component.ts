@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { BehaviorSubject, switchMap, tap } from 'rxjs';
 import { QueryService } from '../services/query.service';
-import { BehaviorSubject, filter, map, switchMap, tap, share } from 'rxjs';
 
 @Component({
   selector: 'app-query1',
@@ -11,19 +11,24 @@ export class Query1Component {
   public user$ = this._queryService.user$;
 
   public tweets$ = this.user$.pipe(
-    filter((userId: number) => !!userId || userId <= 0),
-    switchMap((userId: number) =>
-      this._queryService.getTweets(userId.toString())
-    )
+    switchMap((user) =>
+      this._queryService.getTweets(user._key),
+    ),
+    tap(() => this._loading$$.next(false))
   );
+
+  private _loading$$ = new BehaviorSubject<boolean>(false);
+  public loading$ = this._loading$$.asObservable();
 
   constructor(private readonly _queryService: QueryService) {}
 
   public getRandomUser() {
+    this._loading$$.next(true);
     this._queryService.getRandomUser();
   }
 
   public getRandomUserWithTweets() {
+    this._loading$$.next(true);
     this._queryService.getRandomUserWithTweets();
   }
 }

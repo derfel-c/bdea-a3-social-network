@@ -43,13 +43,25 @@ def query_posts_of_followed_users(db: StandardDatabase, user_id: str, mode: str 
 
 def query_posts_of_user(db: StandardDatabase, user_id: str):
     query = """
-    FOR v, e IN 1..1 OUTBOUND 'users/{}' GRAPH 'TwitterGraph'
-    FILTER IS_SAME_COLLECTION('wrote', e)
-    RETURN {{user: v, post: DOCUMENT(e._to)}}
+    LET user = DOCUMENT('users/{}')
+    FOR v, e IN 1..1 OUTBOUND user GRAPH 'TwitterGraph'
+        FILTER IS_SAME_COLLECTION('wrote', e)
+        RETURN {{user: user, post: DOCUMENT(e._to)}}
     """.format(user_id)
     cursor = db.aql.execute(query)
     result = [res for res in cursor]
     return result
+
+
+def query_user_by_id(db: StandardDatabase, user_id: str):
+    query = """
+    FOR u IN users
+      FILTER u._key == '{}'
+      RETURN u
+    """.format(user_id)
+    cursor = db.aql.execute(query)
+    result = [res for res in cursor]
+    return result[0]
 
 
 def query_users_with_most_followers(db: StandardDatabase, qty: int = 100):
@@ -150,20 +162,6 @@ def query_random_user_id_with_followers_with_tweets(db: StandardDatabase):
     follows_wrote_users = get_follows_wrote_users()
     random_user = random.choice(follows_wrote_users)
     return random_user.replace("users/", "")
-
-
-def query_user_ids_where_followed_users_have_tweets(db: StandardDatabase):
-    query = """
-    FOR user IN follows
-        FOR tweet_relation IN wrote
-        FILTER user._to == tweet_relation._from
-        COLLECT followingUser = user._from WITH COUNT INTO num
-        RETURN followingUser
-    """
-    cursor = db.aql.execute(query)
-    result = [res for res in cursor]
-    return result
-
 
 def query_top25_tweets_of_followed_user(db: StandardDatabase, user_key: str, mode ="newest"):
     if mode == "newest":

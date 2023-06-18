@@ -34,6 +34,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/users/follows/count/${userKey}`);
   }
 
+  getUserById(userKey: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users/${userKey}`);
+  }
+
   getRandomUser(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users/random`);
   }
@@ -48,6 +52,10 @@ export class ApiService {
 
   getTop25NewestTweetsForUser(userKey: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/posts/top25NewestFor/${userKey}`);
+  }
+
+  getTop25PopularTweetsForUser(userKey: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/posts/top25PopularFor/${userKey}`);
   }
 
   getTweetsForUserFromCache(userKey: string): Observable<any> {

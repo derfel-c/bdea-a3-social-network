@@ -6,15 +6,11 @@
 
 .tweets {
   flex: 1;
-
-  .spinner {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 }
 
-span {
-  margin: 1rem;
+.spinner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -29,22 +29,32 @@
       </span>
     </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content
-    *ngIf="top25RecentTweets$ | async as tweets; else noContent"
-  >
-    <mat-tab-group>
-      <mat-tab label="Top 25 most recent Tweets of Accounts this user follows">
+  <mat-card-content>
+    <mat-tab-group [animationDuration]="0">
+      <mat-tab
+        label="Top 25 most recent Tweets of Accounts this user follows"
+        *ngIf="top25RecentTweets$ | async as recentTweets"
+      >
         <div class="tweets">
-          <cdk-virtual-scroll-viewport itemSize="133" class="example-viewport">
-            <div *cdkVirtualFor="let tweet of tweets">
+          <div cdkScrollable class="scroll-area">
+            <div *ngFor="let tweet of recentTweets">
               <app-tweet [tweet]="tweet"></app-tweet>
             </div>
-          </cdk-virtual-scroll-viewport>
+          </div>
         </div>
       </mat-tab>
       <mat-tab
         label="Top 25 most liked Tweets of Accounts this user follows"
-      ></mat-tab>
+        *ngIf="top25PopularTweets$ | async as popularTweets"
+      >
+        <div class="tweets">
+          <div cdkScrollable class="scroll-area">
+            <div *ngFor="let tweet of popularTweets">
+              <app-tweet [tweet]="tweet"></app-tweet>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
     </mat-tab-group>
   </mat-card-content>
   <div *ngIf="loading$ | async" class="spinner">
@@ -52,7 +62,7 @@
   </div>
   <ng-template #noContent>
     <span *ngIf="(loading$ | async) == false" class="no-content"
-      >No User Selected or no Tweets for this user</span
+      >No User Selected or no Tweets found for this user</span
     >
   </ng-template>
 </mat-card>

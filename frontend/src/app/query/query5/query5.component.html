@@ -1,7 +1,7 @@
-<h1>Fanout Top 25 Tweets</h1>
+<h1>Fanout Cache</h1>
 
 <h2 *ngIf="{ user: (user$ | async) } as local">
-  User: {{ local.user && local.user > 0 ? local.user : "No User selected" }}
+  User: {{ local.user ? local.user.name : "No User selected" }}
 </h2>
 
 <div class="action-row">
@@ -19,21 +19,22 @@
 
 <mat-divider></mat-divider>
 
-<div class="tweets" *ngIf="user$ | async as user; else noContent">
-  <ng-container *ngIf="tweets$ | async as tweets; else loading">
-    <cdk-virtual-scroll-viewport itemSize="133" class="example-viewport">
+<div class="tweets">
+  <ng-container *ngIf="tweets$ | async as tweets; else noContent">
+    <cdk-virtual-scroll-viewport *ngIf="tweets.length > 0" itemSize="133" class="example-viewport">
       <div *cdkVirtualFor="let tweet of tweets">
         <app-tweet [tweet]="tweet"></app-tweet>
       </div>
     </cdk-virtual-scroll-viewport>
+    <span *ngIf="tweets.length <= 0 && (loading$ | async) == false" class="no-content">No Tweets found for this user</span>
   </ng-container>
-  <ng-template #loading>
-    <div class="spinner">
-      <mat-spinner></mat-spinner>
-    </div>
-  </ng-template>
 </div>
 
+<div *ngIf="loading$ | async" class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
 <ng-template #noContent>
-  <span>No User Selected or no Tweets for this user</span>
+  <span *ngIf="(loading$ | async) == false" class="no-content">
+    No User Selected or no Tweets found for this user
+  </span>
 </ng-template>

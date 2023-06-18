@@ -42,6 +42,13 @@ def get_follower_count_of_user(user_key: str):
     return result
 
 
+@bp.route("/users/<path:user_key>", methods=["GET"])
+def get_user_by_id(user_key: str):
+    db_client = db.get_db()
+    result = queries.query_user_by_id(db_client, user_key)
+    return result
+
+
 @bp.route("/users/follows/count/<path:user_key>", methods=["GET"])
 def get_count_of_users_user_follows(user_key: str):
     db_client = db.get_db()
