@@ -79,7 +79,7 @@ def create_tweets(tweets_collection: StandardCollection, tweet_limit: int) -> Tu
     
     if tweet_limit != -1 and tweet_limit < len(tweets):
         tweets = tweets[0:tweet_limit]
-    result = tweets_collection.insert_many(tweets)
+    result = tweets_collection.insert_many(tweets, overwrite=True)
     tweet_ids = [x["_key"] for x in result]
     end = time.time()
     print(f"Finished creating {len(tweets)} tweets, took {end - start} seconds")
@@ -109,7 +109,7 @@ def map_tweets_to_users(wrote_edge_collection: StandardCollection, tweets: List[
             wrote_relations.append({"_from": "users/" + author, "_to": "tweets/" + tweet_ids[tweet]})
     end = time.time()
     print(f"Finished creating {len(tweets)} wrote relations, took {end - start} seconds")
-    wrote_edge_collection.insert_many(wrote_relations)
+    wrote_edge_collection.insert_many(wrote_relations, overwrite=True)
     return wrote_relations
 
 
@@ -152,7 +152,7 @@ def create_fanout(db: StandardDatabase, collection: StandardCollection, users: L
         relations = []
         for t in tweets:
             relations.append({"_from": "users/" + u["_key"], "_to": "tweets/" + t["_key"]})
-        collection.insert_many(relations)
+        collection.insert_many(relations, overwrite=True)
     end = time.time()
     print(f"Finished creating fanout with limit {100}, took {end - start} seconds")
 

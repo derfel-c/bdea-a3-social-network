@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, retry } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
+import { Post } from 'src/app/api/models/post.interface';
 import { Tweet } from 'src/app/api/models/tweet.interface';
 import { User } from 'src/app/api/models/user.interface';
 
@@ -21,6 +22,12 @@ export class QueryService {
 
   public getRandomUserWithTweets() {
     return this._apiService.getRandomUserWithTweets().subscribe((userId: number) => {
+      this._user$$.next(userId);
+    });
+  }
+
+  public getRandomUserWithFollowersWithTweets() {
+    return this._apiService.getRandomUserWithFollowersWithTweets().subscribe((userId: number) => {
       this._user$$.next(userId);
     });
   }
@@ -49,7 +56,15 @@ export class QueryService {
     return this._apiService.getFollowerCountOfUser(userKey);
   }
 
-  public getTop25RecentTweets(userKey: string): Observable<Tweet[]> {
+  public getTop25RecentTweets(userKey: string): Observable<Post[]> {
     return this._apiService.getTop25NewestTweetsForUser(userKey);
+  }
+
+  public getTweetsForUserFromCache(userKey: string): Observable<Post[]> {
+    return this._apiService.getTweetsForUserFromCache(userKey);
+  }
+
+  public getTop25PostsContainingWords(words: string): Observable<Post[]> {
+    return this._apiService.getTop25PostsContainingWords(words);
   }
 }

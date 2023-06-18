@@ -1,0 +1,24 @@
+<h1>Query for Top 25 Tweets</h1>
+
+<div class="action-row">
+  <mat-form-field>
+    <mat-label>Search for Tweets</mat-label>
+    <input matInput placeholder="Query..." ngModel (ngModelChange)="updateQuery($event)">
+  </mat-form-field>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="tweets">
+  <ng-container *ngIf="tweets$ | async as tweets; else noContent">
+    <cdk-virtual-scroll-viewport itemSize="133" class="example-viewport">
+      <div *cdkVirtualFor="let tweet of tweets">
+        <app-tweet [tweet]="tweet"></app-tweet>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </ng-container>
+</div>
+
+<ng-template #noContent>
+  <span>No User Selected or no Tweets for this user</span>
+</ng-template>

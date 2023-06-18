@@ -10,7 +10,10 @@ from . import db_util
 def setup_db(app: Flask, tweet_limit: int):
     with app.app_context():
         db = get_db()
-        initial_data_load(db, tweet_limit)
+        if not db.has_collection('likes'):
+            initial_data_load(db, tweet_limit)
+        else:
+            print("Database already initialized")
 
 
 def get_db() -> StandardDatabase:

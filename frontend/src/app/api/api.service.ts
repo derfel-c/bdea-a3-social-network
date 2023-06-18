@@ -42,6 +42,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/users/randomWithTweets`);
   }
 
+  getRandomUserWithFollowersWithTweets(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users/randomWithFollowersWithTweets`);
+  }
+
   getTop25NewestTweetsForUser(userKey: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/posts/top25NewestFor/${userKey}`);
   }

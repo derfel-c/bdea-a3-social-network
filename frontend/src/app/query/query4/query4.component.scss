@@ -11,20 +11,29 @@ mat-card {
     display: flex;
     gap: 0.5rem;
   }
+
+  mat-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .tweets {
-  height: 250px;
   flex: 1;
+}
 
-  .spinner {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.spinner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 h3 {
   margin: .5rem 0 .5rem 0;
+}
+
+.no-content {
+  margin: 1rem;
 }

@@ -36,15 +36,22 @@ export class Query4Component {
     switchMap((userId: number) =>
       this._queryService.getTop25RecentTweets(userId.toString())
     ),
+    map((x) => x.map((post) => ({post: post}))),
+    tap(() => this._loading$$.next(false))
   );
+
+  private _loading$$ = new BehaviorSubject<boolean>(false);
+  public loading$ = this._loading$$.asObservable();
 
   constructor(private readonly _queryService: QueryService) {}
 
   public getRandomUser() {
+    this._loading$$.next(true);
     this._queryService.getRandomUser();
   }
 
-  public getRandomUserWithTweets() {
-    this._queryService.getRandomUserWithTweets();
+  public getRandomUserWithFollowersWithTweets() {
+    this._loading$$.next(true);
+    this._queryService.getRandomUserWithFollowersWithTweets();
   }
 }

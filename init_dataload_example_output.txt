@@ -1,0 +1,63 @@
+Started initial data load
+Creating USERS |################################| 81306/81306 Users - ~0s remaining - 9s elapsed  
+Creating FOLLOWER relations |############################### | 2420000/2420766 Follower relations - ~1s remaining - 145s elapsed 
+Finished creating 2420766 follower relations, took 145.12428832054138 seconds
+Finished creating 52542 tweets, took 2.1266298294067383 seconds
+Finished creating 52542 wrote relations, took 0.018475055694580078 seconds
+Creating likes.json |################################| 52542/52542 tweets - ~0s remaining - 514s elapsed   
+Connected to ArangoDB 'http+tcp://127.0.0.1:8529, version: 3.11.0, database: 'twitter2', username: 'root'
+----------------------------------------
+database:               twitter2
+collection:             likes
+overwrite coll. prefix: no
+create:                 no
+create database:        no
+source filename:        data/likes.json
+file type:              json
+threads:                12
+on duplicate:           error
+connect timeout:        5
+request timeout:        1200
+----------------------------------------
+Starting JSON import...
+2023-06-18T12:18:57Z [246] INFO [9ddf3] {general} processed 171.9 MB (3%) of input file
+2023-06-18T12:19:32Z [246] INFO [9ddf3] {general} processed 342.8 MB (6%) of input file
+2023-06-18T12:20:27Z [246] INFO [9ddf3] {general} processed 513.8 MB (9%) of input file
+2023-06-18T12:21:22Z [246] INFO [9ddf3] {general} processed 684.7 MB (12%) of input file
+2023-06-18T12:22:22Z [246] INFO [9ddf3] {general} processed 855.6 MB (15%) of input file
+2023-06-18T12:23:17Z [246] INFO [9ddf3] {general} processed 1.0 GB (18%) of input file
+2023-06-18T12:24:01Z [246] INFO [9ddf3] {general} processed 1.1 GB (21%) of input file
+2023-06-18T12:24:44Z [246] INFO [9ddf3] {general} processed 1.3 GB (24%) of input file
+2023-06-18T12:25:37Z [246] INFO [9ddf3] {general} processed 1.5 GB (27%) of input file
+2023-06-18T12:26:27Z [246] INFO [9ddf3] {general} processed 1.7 GB (30%) of input file
+2023-06-18T12:27:12Z [246] INFO [9ddf3] {general} processed 1.8 GB (33%) of input file
+2023-06-18T12:27:45Z [246] INFO [9ddf3] {general} processed 2.0 GB (36%) of input file
+2023-06-18T12:28:53Z [246] INFO [9ddf3] {general} processed 2.2 GB (39%) of input file
+2023-06-18T12:29:51Z [246] INFO [9ddf3] {general} processed 2.3 GB (42%) of input file
+2023-06-18T12:30:53Z [246] INFO [9ddf3] {general} processed 2.5 GB (45%) of input file
+2023-06-18T12:31:54Z [246] INFO [9ddf3] {general} processed 2.7 GB (48%) of input file
+2023-06-18T12:33:15Z [246] INFO [9ddf3] {general} processed 2.9 GB (51%) of input file
+2023-06-18T12:34:29Z [246] INFO [9ddf3] {general} processed 3.0 GB (54%) of input file
+2023-06-18T12:35:33Z [246] INFO [9ddf3] {general} processed 3.2 GB (57%) of input file
+2023-06-18T12:36:35Z [246] INFO [9ddf3] {general} processed 3.4 GB (60%) of input file
+2023-06-18T12:37:42Z [246] INFO [9ddf3] {general} processed 3.5 GB (63%) of input file
+2023-06-18T12:39:13Z [246] INFO [9ddf3] {general} processed 3.7 GB (66%) of input file
+2023-06-18T12:40:32Z [246] INFO [9ddf3] {general} processed 3.9 GB (69%) of input file
+2023-06-18T12:41:31Z [246] INFO [9ddf3] {general} processed 4.1 GB (72%) of input file
+2023-06-18T12:43:30Z [246] INFO [9ddf3] {general} processed 4.2 GB (75%) of input file
+2023-06-18T12:45:55Z [246] INFO [9ddf3] {general} processed 4.4 GB (78%) of input file
+2023-06-18T12:47:13Z [246] INFO [9ddf3] {general} processed 4.6 GB (81%) of input file
+2023-06-18T12:49:10Z [246] INFO [9ddf3] {general} processed 4.7 GB (84%) of input file
+2023-06-18T12:50:47Z [246] INFO [9ddf3] {general} processed 4.9 GB (87%) of input file
+2023-06-18T12:52:06Z [246] INFO [9ddf3] {general} processed 5.1 GB (90%) of input file
+2023-06-18T12:54:15Z [246] INFO [9ddf3] {general} processed 5.3 GB (93%) of input file
+2023-06-18T12:55:28Z [246] INFO [9ddf3] {general} processed 5.4 GB (96%) of input file
+2023-06-18T12:56:29Z [246] INFO [9ddf3] {general} processed 5.6 GB (99%) of input file
+
+created:          101257169
+warnings/errors:  0
+updated/replaced: 0
+ignored:          0
+Finished creating like relations json file in 514.7421061992645 seconds
+Finished creating fanout with limit 100, took 5.139820337295532 seconds
+Finished initial data load, took 3043.9354593753815
